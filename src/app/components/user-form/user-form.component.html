@@ -1,0 +1,104 @@
+<mat-card class="card">
+  <mat-card-header>
+    <mat-card-title>Input Purchase Value</mat-card-title>
+  </mat-card-header>
+  <form [formGroup]="userForm" (ngSubmit)="sendForm()">
+    <div class="input-row">
+      <mat-form-field>
+        <mat-label>Location</mat-label>
+        <mat-select
+          formControlName="location"
+          (selectionChange)="selectLocation($event.value)"
+        >
+          @for (loc of locationTaxList; track loc.location; let isFirst =
+          $first) {
+          <mat-option [value]="loc.location">
+            {{ loc.location }}
+          </mat-option>
+          }
+        </mat-select>
+        <mat-error> Please, select VAT tax</mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>VAT Rate</mat-label>
+        <mat-select formControlName="vatRate">
+          @for (vatRateValue of vatRateList; track vatRateValue; let isFirst =
+          $first) {
+          <mat-option [value]="vatRateValue"> {{ vatRateValue }} % </mat-option>
+          }
+        </mat-select>
+        <mat-error> Please, select VAT tax</mat-error>
+      </mat-form-field>
+    </div>
+    <div class="input-row">
+      <mat-form-field class="input-field">
+        <mat-label>Net Amount</mat-label>
+        <input
+          matInput
+          currencyMask
+          formControlName="netAmount"
+          placeholder="0.00"
+          [options]="{
+            allowNegative: 'false',
+            prefix: 'R$ ',
+            thousands: '.',
+            decimal: ','
+          }"
+        />
+        @if (formControls['netAmount'].invalid &&
+        (formControls['netAmount'].touched||formControls['netAmount'].dirty)) {
+        <div>
+          <div>Net Amount Error</div>
+        </div>
+        }
+      </mat-form-field>
+      <mat-form-field class="input-field">
+        <mat-label>Gross Amount</mat-label>
+        <input
+          matInput
+          currencyMask
+          formControlName="grossAmount"
+          placeholder="0.00"
+          [options]="{
+            allowNegative: 'false',
+            prefix: 'R$ ',
+            thousands: '.',
+            decimal: ','
+          }"
+        />
+      </mat-form-field>
+      <mat-form-field class="input-field">
+        <mat-label>VAT Amount</mat-label>
+        <input
+          matInput
+          currencyMask
+          formControlName="vatAmount"
+          placeholder="0.00"
+          [options]="{
+            allowNegative: 'false',
+            prefix: 'R$ ',
+            thousands: '.',
+            decimal: ','
+          }"
+        />
+      </mat-form-field>
+    </div>
+    @if (!formSubmitted && userForm.errors?.['valueDuplicated']) {
+    <div class="input-row">
+      <mat-error>Please, provide only one calculation value</mat-error>
+    </div>
+    }
+
+    <div>
+      <mat-card-actions class="input-row">
+        <button mat-raised-button color="primary" type="submit">
+          Calculate Values
+        </button>
+        <button mat-raised-button color="secundary" (click)="resetForm()">
+          Clean Values
+        </button>
+      </mat-card-actions>
+    </div>
+  </form>
+</mat-card>
